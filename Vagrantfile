@@ -31,12 +31,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       core.vm.provision :shell do |sh|
         sh.inline = <<-EOT
           sudo rm -rf /home/core/etcd/
-          sudo cp /tmp/units/etcd-cluster.service /media/state/units/
-          sudo sed -e "s/%IP_ADDR%/#{ip_addr}/g" -i /media/state/units/etcd-cluster.service
-          sudo sed -e "s/%NAME%/#{vm_name}/g" -i /media/state/units/etcd-cluster.service
-          sudo sed -e "s/%PEERS%/#{peers}/g" -i /media/state/units/etcd-cluster.service
+          sudo cp /tmp/units/etcd-cluster.service /etc/systemd/system/
+          sudo sed -e "s/%IP_ADDR%/#{ip_addr}/g" -i /etc/systemd/system/etcd-cluster.service
+          sudo sed -e "s/%NAME%/#{vm_name}/g" -i /etc/systemd/system/etcd-cluster.service
+          sudo sed -e "s/%PEERS%/#{peers}/g" -i /etc/systemd/system/etcd-cluster.service
           sudo systemctl stop etcd
-          sudo systemctl enable --runtime /media/state/units/etcd-cluster.service
+          sudo systemctl enable etcd-cluster.service
           sudo systemctl daemon-reload
           sudo systemctl start etcd-cluster
           sudo systemctl start fleet
