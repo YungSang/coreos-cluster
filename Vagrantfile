@@ -6,40 +6,38 @@ VAGRANTFILE_API_VERSION = "2"
 
 NUM_INSTANCES = 3
 
+BASE_IP_ADDR = "192.168.65"
+ETCD_LEADER  = "#{BASE_IP_ADDR}.2"
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   (1..NUM_INSTANCES).each do |i|
     config.vm.define "core-#{i}" do |core|
       vm_name = "core-#{i}"
-      ip_addr = "192.168.65.#{i+1}"
+      ip_addr = "#{BASE_IP_ADDR}.#{i+1}"
+      peers   = "#{ETCD_LEADER}:7001"
 
-      if i == 1
+      if ip_addr == ETCD_LEADER
         peers = ""
-      else
-        peers = "-peers 192.168.65.2:7001"
       end
 
       core.vm.box = "yungsang/coreos"
 
       core.vm.hostname = vm_name
 
-      core.vm.network "forwarded_port", guest: 4001, host: "400#{i}".to_i
+      core.vm.network :forwarded_port, guest: 4001, host: "400#{i}".to_i
 
       core.vm.network :private_network, ip: ip_addr
 
-      core.vm.provision :file, source: "units/", destination: "/tmp"
+      core.vm.provision :file, source: "./user-data", destination: "/tmp/user-data"
 
       core.vm.provision :shell do |sh|
+        sh.privileged = true
         sh.inline = <<-EOT
-          sudo rm -rf /home/core/etcd/
-          sudo cp /tmp/units/etcd-cluster.service /etc/systemd/system/
-          sudo sed -e "s/%IP_ADDR%/#{ip_addr}/g" -i /etc/systemd/system/etcd-cluster.service
-          sudo sed -e "s/%NAME%/#{vm_name}/g" -i /etc/systemd/system/etcd-cluster.service
-          sudo sed -e "s/%PEERS%/#{peers}/g" -i /etc/systemd/system/etcd-cluster.service
-          sudo systemctl stop etcd
-          sudo systemctl enable etcd-cluster.service
-          sudo systemctl daemon-reload
-          sudo systemctl start etcd-cluster
-          sudo systemctl start fleet
+          sed -e "s/%NAME%/#{vm_name}/g" -i /tmp/user-data
+          sed -e "s/%PEERS%/#{peers}/g" -i /tmp/user-data
+          mkdir -p /var/lib/coreos-vagrant
+          cp /tmp/user-data /var/lib/coreos-vagrant/
+          systemctl daemon-reload
         EOT
       end
     end
