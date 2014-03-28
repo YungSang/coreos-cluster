@@ -4,6 +4,8 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
+Vagrant.require_version ">= 1.5.0"
+
 NUM_INSTANCES = 3
 
 BASE_IP_ADDR = "192.168.65"
@@ -21,6 +23,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
 
       core.vm.box = "yungsang/coreos"
+
+      config.vm.box_version = ">= 0.2.0"
 
       core.vm.hostname = vm_name
 
