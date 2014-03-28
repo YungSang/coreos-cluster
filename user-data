@@ -1,0 +1,22 @@
+#cloud-config
+
+coreos:
+  etcd:
+      #discovery: <DISCOVERY>
+      name: %NAME%
+      addr: $public_ipv4:4001
+      peer-addr: $public_ipv4:7001
+      peers: %PEERS% 
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
+      runtime: no
+      content: |
+        [Unit]
+        Description=fleet
+
+        [Service]
+        Environment=FLEET_PUBLIC_IP=$public_ipv4
+        ExecStart=/usr/bin/fleet
