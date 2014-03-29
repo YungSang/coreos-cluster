@@ -3,7 +3,6 @@
 coreos:
   etcd:
       #discovery: <DISCOVERY>
-      name: %NAME%
       addr: $public_ipv4:4001
       peer-addr: $public_ipv4:7001
       peers: %PEERS% 
