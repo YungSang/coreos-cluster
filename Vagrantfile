@@ -12,19 +12,18 @@ BASE_IP_ADDR = "192.168.65"
 ETCD_LEADER  = "#{BASE_IP_ADDR}.2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "yungsang/coreos"
+
+  config.vm.box_version = ">= 0.2.0"
+
   (1..NUM_INSTANCES).each do |i|
-    config.vm.define "core-#{i}" do |core|
-      vm_name = "core-#{i}"
+    config.vm.define vm_name = "core-#{i}" do |core|
       ip_addr = "#{BASE_IP_ADDR}.#{i+1}"
       peers   = "#{ETCD_LEADER}:7001"
 
       if ip_addr == ETCD_LEADER
         peers = ""
       end
-
-      core.vm.box = "yungsang/coreos"
-
-      config.vm.box_version = ">= 0.2.0"
 
       core.vm.hostname = vm_name
 
