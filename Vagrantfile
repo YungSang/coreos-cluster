@@ -38,8 +38,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         sh.inline = <<-EOT
           sed -e "s/%PEERS%/#{peers}/g" -i /tmp/user-data
           mkdir -p /var/lib/coreos-vagrant
-          cp /tmp/user-data /var/lib/coreos-vagrant/
-          systemctl daemon-reload
+          mv /tmp/user-data /var/lib/coreos-vagrant/
         EOT
       end
     end
