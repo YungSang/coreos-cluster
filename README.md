@@ -41,6 +41,7 @@ $ fleetctl list-units
 UNIT			LOAD	ACTIVE	SUB	DESC		MACHINE
 hello.service	-		-		-	Hello World	-
 $ fleetctl start hello.service
+$ fleetctl list-units
 UNIT			LOAD	ACTIVE	SUB		DESC		MACHINE
 hello.service	loaded	active	running	Hello World	d760866b.../192.168.65.2
 ```
