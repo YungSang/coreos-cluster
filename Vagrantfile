@@ -14,7 +14,7 @@ ETCD_LEADER  = "#{BASE_IP_ADDR}.2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "yungsang/coreos"
 
-  config.vm.box_version = ">= 0.3.1"
+  config.vm.box_version = ">= 0.4.0"
 
   (1..NUM_INSTANCES).each do |i|
     config.vm.define vm_name = "core-#{i}" do |core|
@@ -31,14 +31,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       core.vm.network :private_network, ip: ip_addr
 
-      core.vm.provision :file, source: "./user-data", destination: "/tmp/user-data"
+      core.vm.provision :file, source: "./user-data", destination: "/tmp/vagrantfile-user-data"
 
       core.vm.provision :shell do |sh|
         sh.privileged = true
         sh.inline = <<-EOT
-          sed -e "s/%PEERS%/#{peers}/g" -i /tmp/user-data
-          mkdir -p /var/lib/coreos-vagrant
-          mv /tmp/user-data /var/lib/coreos-vagrant/
+          sed -e "s/%PEERS%/#{peers}/g" -i /tmp/vagrantfile-user-data
+          mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
         EOT
       end
     end
