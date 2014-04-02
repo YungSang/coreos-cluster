@@ -2,13 +2,14 @@
 
 coreos:
   etcd:
-      #discovery: <DISCOVERY>
+      discovery: http://%ETCD_DISCVERY%:4001/v2/keys/cluster
       addr: $public_ipv4:4001
       peer-addr: $public_ipv4:7001
-      peers: %PEERS% 
+
   units:
     - name: etcd.service
       command: start
+
     - name: fleet.service
       command: start
       runtime: no

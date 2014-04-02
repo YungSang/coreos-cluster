@@ -1,0 +1,9 @@
+#cloud-config
+
+coreos:
+  etcd:
+      addr: $public_ipv4:4001
+      peer-addr: $public_ipv4:7001
+  units:
+    - name: etcd.service
+      command: start
