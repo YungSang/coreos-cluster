@@ -27,7 +27,6 @@ test
 ## Play with Fleet
 
 - Download fleetctl from [https://github.com/coreos/fleet/releases](https://github.com/coreos/fleet/releases)
-- Download example services from [https://github.com/coreos/fleet/tree/master/examples](https://github.com/coreos/fleet/tree/master/examples)
 
 ```
 $ fleetctl list-machines
@@ -36,6 +35,8 @@ d760866b...	192.168.65.2	-
 6d1a752c...	192.168.65.3	-
 39959ae3...	192.168.65.4	-
 $ fleetctl list-units
+UNIT	LOAD	ACTIVE	SUB		DESC	MACHINE
+$ curl -LO https://raw.github.com/coreos/fleet/master/examples/hello.service
 $ fleetctl submit hello.service
 $ fleetctl list-units
 UNIT			LOAD	ACTIVE	SUB	DESC		MACHINE
