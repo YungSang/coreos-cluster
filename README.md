@@ -86,6 +86,59 @@ core@core-1 ~ $
 
 Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-containers/launching/fleet-using-the-client/)
 
+## Ambassador Pattern
+
+![](http://coreos.com/assets/images/media/etcd-ambassador-hosts.png)
+
+Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com/blog/docker-dynamic-ambassador-powered-by-etcd/)
+
+- Clear the previous service
+
+```
+$ fleetctl destroy hello.service
+$ fleetctl list-units
+UNIT	LOAD	ACTIVE	SUB		DESC	MACHINE
+```
+
+- Get services for Ambassador Pattern
+
+```
+$ git clone git@github.com:YungSang/fleet-redis-demo.git ambassador
+```
+
+- Deploy services with Fleet
+
+```
+$ fleet start ambassador/*.service
+$ fleetctl list-units
+UNIT						LOAD	ACTIVE	SUB		DESC	MACHINE
+etcd-amb-redis.service		loaded	active	running	-		305b9fb6.../192.168.65.3
+etcd-amb-redis2.service		loaded	active	running	-		41e13e40.../192.168.65.4
+redis-demo.service			loaded	active	running	-		305b9fb6.../192.168.65.3
+redis-docker-reg.service	loaded	active	running	-		305b9fb6.../192.168.65.3
+redis-dyn-amb.service		loaded	active	running	-		41e13e40.../192.168.65.4
+```
+
+- Check links from HostB to Redis on HostA
+
+```
+$ fleetctl ssh -u redis-dyn-amb.service
+   ______                ____  _____
+  / ____/___  ________  / __ \/ ___/
+ / /   / __ \/ ___/ _ \/ / / /\__ \
+/ /___/ /_/ / /  /  __/ /_/ /___/ /
+\____/\____/_/   \___/\____//____/
+core@core-3 ~ $ docker run -i -t --link redis-dyn-amb.service:redis relateiq/redis-cli
+Pulling repository relateiq/redis-cli
+.
+.
+.
+redis 172.17.0.3:6379> ping
+PONG
+redis 172.17.0.3:6379> exit
+core@core-3 ~ $ exit
+```
+
 ## License
 
 [![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)  
