@@ -109,7 +109,7 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 
 Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com/blog/docker-dynamic-ambassador-powered-by-etcd/)
 
-- Clear the previous service
+- Clear the previous service unit
 
 	```
 	$ fleetctl destroy hello.service
@@ -123,17 +123,36 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 	$ git clone git@github.com:YungSang/fleet-redis-demo.git ambassador
 	```
 
-- Deploy services with Fleet
+- Deploy service units with Fleet
 
 	```
 	$ fleetctl start ambassador/*.service
 	$ fleetctl list-units
-	UNIT						LOAD	ACTIVE	SUB		DESC	MACHINE
-	etcd-amb-redis.service		loaded	active	running	-		305b9fb6.../192.168.65.3
-	etcd-amb-redis2.service		loaded	active	running	-		41e13e40.../192.168.65.4
-	redis-demo.service			loaded	active	running	-		305b9fb6.../192.168.65.3
-	redis-docker-reg.service	loaded	active	running	-		305b9fb6.../192.168.65.3
-	redis-dyn-amb.service		loaded	active	running	-		41e13e40.../192.168.65.4
+	UNIT						LOAD	ACTIVE	SUB		DESC					MACHINE
+	etcd-amb-redis.service		loaded	active	running	Ambassador on A			a7175ced.../192.168.65.2
+	etcd-amb-redis2.service		loaded	active	running	Ambassador on B			bbeb5e27.../192.168.65.3
+	redis-demo.service			loaded	active	running	Redis on A				a7175ced.../192.168.65.2
+	redis-docker-reg.service	loaded	active	running	Register on A			a7175ced.../192.168.65.2
+	redis-dyn-amb.service		loaded	active	running	Etcd Ambassador on B	bbeb5e27.../192.168.65.3
+	```
+
+	***You may need restart some units to recover from failure.***
+
+	```
+	$ fleetctl stop redis-docker-reg.service
+	$ fleetctl start redis-docker-reg.service
+	```
+
+- Make sure the services has been started successfully  
+(It will take some time to complete.)
+
+	```
+	$ etcdctl ls --recursive
+	/services
+	/services/redis-A
+	/services/redis-A/redis-demo.service
+	$ etcdctl get /services/redis-A/redis-demo.service
+	{ "port": 49153, "host": "192.168.65.2" }
 	```
 
 - Check links from Host B to Redis on Host A
@@ -145,7 +164,7 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 	 / /   / __ \/ ___/ _ \/ / / /\__ \
 	/ /___/ /_/ / /  /  __/ /_/ /___/ /
 	\____/\____/_/   \___/\____//____/
-	core@core-3 ~ $ docker run -i -t --link redis-dyn-amb.service:redis relateiq/redis-cli
+	core@core-2 ~ $ docker run -i -t --link redis-dyn-amb.service:redis relateiq/redis-cli
 	Pulling repository relateiq/redis-cli
 	.
 	.
@@ -153,7 +172,7 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 	redis 172.17.0.3:6379> ping
 	PONG
 	redis 172.17.0.3:6379> exit
-	core@core-3 ~ $ 
+	core@core-2 ~ $ 
 	```
 
 ## License
