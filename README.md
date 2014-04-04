@@ -136,7 +136,7 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 	redis-dyn-amb.service		loaded	active	running	-		41e13e40.../192.168.65.4
 	```
 
-- Check links from HostB to Redis on HostA
+- Check links from Host B to Redis on Host A
 
 	```
 	$ fleetctl ssh -u redis-dyn-amb.service
