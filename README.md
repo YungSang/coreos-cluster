@@ -136,11 +136,13 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 	redis-dyn-amb.service		loaded	active	running	Etcd Ambassador on B	bbeb5e27.../192.168.65.3
 	```
 
-	***You may need restart some units to recover from failure.***
+	***You may need to restart some units to recover from failure.***
 
 	```
 	$ fleetctl stop redis-docker-reg.service
 	$ fleetctl start redis-docker-reg.service
+	$ fleetctl stop redis-dyn-amb.service
+	$ fleetctl start redis-dyn-amb.service
 	```
 
 - Make sure the services has been started successfully  
