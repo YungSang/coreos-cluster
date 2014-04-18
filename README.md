@@ -49,6 +49,19 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 	UNIT	LOAD	ACTIVE	SUB		DESC	MACHINE
 	```
 
+	***You may need to reset ~/.fleetctl/known_hosts.***
+
+	```
+	$ fleetctl list-machines
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	.
+	.
+	.
+	$ rm ~/.fleetctl/known_hosts
+	```
+
 - Deplay hello.service
 
 	```
@@ -134,15 +147,6 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 	redis-demo.service			loaded	active	running	Redis on A				a7175ced.../192.168.65.2
 	redis-docker-reg.service	loaded	active	running	Register on A			a7175ced.../192.168.65.2
 	redis-dyn-amb.service		loaded	active	running	Etcd Ambassador on B	bbeb5e27.../192.168.65.3
-	```
-
-	***You may need to restart some units to recover from failure.***
-
-	```
-	$ fleetctl stop redis-docker-reg.service
-	$ fleetctl start redis-docker-reg.service
-	$ fleetctl stop redis-dyn-amb.service
-	$ fleetctl start redis-dyn-amb.service
 	```
 
 - Make sure the services has been started successfully  
