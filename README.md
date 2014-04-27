@@ -37,6 +37,23 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 
 - Requirement: [fleetctl](https://github.com/coreos/fleet/releases)
 
+- Prepare
+
+	***You may need to reset ~/.fleetctl/known_hosts.***
+
+	```
+	$ rm ~/.fleetctl/known_hosts
+	```
+
+	***You may need the following configurations.***
+
+	```
+	$ vagrant ssh-config core-1 | sed -n "s/IdentityFile//gp" | xargs ssh-add
+	$ export FLEETCTL_TUNNEL="$(vagrant ssh-config core-1 | sed -n "s/[ ]*HostName[ ]*//gp"):$(vagrant ssh-config core-1 | sed -n "s/[ ]*Port[ ]*//gp")"
+	```
+
+	Cf.) [Remote fleet Access for Vagrant](https://github.com/coreos/fleet/blob/master/Documentation/remote-access.md#vagrant)
+
 - Check Fleet status
 
 	```
@@ -47,19 +64,6 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 	39959ae3...	192.168.65.4	-
 	$ fleetctl list-units
 	UNIT	LOAD	ACTIVE	SUB		DESC	MACHINE
-	```
-
-	***You may need to reset ~/.fleetctl/known_hosts.***
-
-	```
-	$ fleetctl list-machines
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-	.
-	.
-	.
-	$ rm ~/.fleetctl/known_hosts
 	```
 
 - Deplay hello.service
@@ -77,15 +81,6 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 	```
 
 - Check the status and login to the VM where the servise runs  
-***You may need the following configurations to use `fleetctl status/ssh`.***
-
-	```
-	$ vagrant ssh-config core-1 | sed -n "s/IdentityFile//gp" | xargs ssh-add
-	$ export FLEETCTL_TUNNEL="$(vagrant ssh-config core-1 | sed -n "s/[ ]*HostName[ ]*//gp"):$(vagrant ssh-config core-1 | sed -n "s/[ ]*Port[ ]*//gp")"
-	```
-
-	Cf.) [Remote fleet Access for Vagrant](https://github.com/coreos/fleet/blob/master/Documentation/remote-access.md#vagrant)
-
 
 	```
 	$ fleetctl status hello.service
