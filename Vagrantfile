@@ -16,8 +16,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box_version = ">= 0.4.0"
 
-  config.vm.define vm_name = "discovery" do |discovery|
-    discovery.vm.hostname = vm_name
+  config.vm.define "discovery" do |discovery|
+    discovery.vm.hostname = "discovery"
 
     discovery.vm.network :private_network, ip: ETCD_DISCVERY
 
@@ -32,14 +32,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   (1..NUM_INSTANCES).each do |i|
-    config.vm.define vm_name = "core-#{i}" do |core|
-      ip_addr = "#{BASE_IP_ADDR}.#{i+1}"
-
-      core.vm.hostname = vm_name
+    config.vm.define "core-#{i}" do |core|
+      core.vm.hostname = "core-#{i}"
 
       core.vm.network :forwarded_port, guest: 4001, host: "400#{i}".to_i
 
-      core.vm.network :private_network, ip: ip_addr
+      core.vm.network :private_network, ip: "#{BASE_IP_ADDR}.#{i+1}"
 
       core.vm.provision :file, source: "./user-data", destination: "/tmp/vagrantfile-user-data"
 
