@@ -8,7 +8,7 @@ Vagrant.require_version ">= 1.5.0"
 
 NUM_INSTANCES = 3
 
-BASE_IP_ADDR  = "192.168.65"
+BASE_IP_ADDR  = ENV['BASE_IP_ADDR'] || "192.168.65"
 ETCD_DISCVERY = "#{BASE_IP_ADDR}.101"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
