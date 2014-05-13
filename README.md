@@ -102,7 +102,7 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 	Mar 29 16:11:13 core-1 bash[3237]: Hello, world
 	Mar 29 16:11:14 core-1 bash[3237]: Hello, world
 	Mar 29 16:11:15 core-1 bash[3237]: Hello, world
-	$ fleetctl ssh -u hello.service
+	$ fleetctl ssh -unit hello.service
 	   ______                ____  _____
 	  / ____/___  ________  / __ \/ ___/
 	 / /   / __ \/ ___/ _ \/ / / /\__ \
@@ -159,7 +159,7 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 - Check links from Host B to Redis on Host A
 
 	```
-	$ fleetctl ssh -u redis-dyn-amb.service
+	$ fleetctl ssh -unit redis-dyn-amb.service
 	   ______                ____  _____
 	  / ____/___  ________  / __ \/ ___/
 	 / /   / __ \/ ___/ _ \/ / / /\__ \
