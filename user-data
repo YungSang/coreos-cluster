@@ -20,3 +20,21 @@ coreos:
         [Service]
         Environment=FLEET_PUBLIC_IP=$public_ipv4
         ExecStart=/usr/bin/fleet
+
+    - name: diamond.service
+      command: start
+      runtime: no
+      content: |
+        [Unit]
+        Description=Diamond Service
+        After=docker.service
+        Requires=docker.service
+
+        [Service]
+        User=core
+        ExecStartPre=/usr/bin/curl -L https://gist.github.com/mopemope/79476588ed3650bc08d4/raw/nspawn-container -o /home/core/nspawn-container
+        ExecStartPre=/usr/bin/chmod +x /home/core/nspawn-container
+        ExecStartPre=/usr/bin/docker pull mopemope/diamond-docker
+        ExecStart=/bin/sh -c '/home/core/nspawn-container mopemope/diamond-docker /diamond/run_diamond %ETCD_DISCVERY% 20030'
+        Restart=on-failure
+        RestartSec=5s

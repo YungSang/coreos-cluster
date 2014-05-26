@@ -4,6 +4,24 @@ coreos:
   etcd:
       addr: $public_ipv4:4001
       peer-addr: $public_ipv4:7001
+
   units:
     - name: etcd.service
       command: start
+
+    - name: graphite.service
+      command: start
+      runtime: no
+      content: |
+        [Unit]
+        Description=Graphite Service
+        After=docker.service
+        Requires=docker.service
+
+        [Service]
+        ExecStartPre=/usr/bin/docker pull mopemope/graphite-docker
+        ExecStart=/usr/bin/docker run -d --name %n -p 8081:81 -p 8080:80 -p 20030:2003 -p 2004 -p 7002 -p 8125:8125/udp -p 8126:8126 mopemope/graphite-docker
+        #ExecStop=/usr/bin/docker stop -t 3 %n
+        #ExecStopPost=/usr/bin/docker rm %n
+        Restart=on-failure
+        RestartSec=5s

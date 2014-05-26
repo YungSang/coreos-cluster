@@ -21,6 +21,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     discovery.vm.network :private_network, ip: ETCD_DISCVERY
 
+    discovery.vm.network :forwarded_port, guest: 4243, host: 4243
+    discovery.vm.network :forwarded_port, guest: 8080, host: 8080
+    discovery.vm.network :forwarded_port, guest: 8081, host: 8081
+
     discovery.vm.provision :file, source: "./discovery", destination: "/tmp/vagrantfile-user-data"
 
     discovery.vm.provision :shell do |sh|
