@@ -1,0 +1,13 @@
+#!/bin/bash
+
+NAME="$0"
+ARGS="$*"
+
+if [ -z "$ARGS" ]; then
+  echo "You may need to execute the follwoing command to use \"${NAME}\" at the first time."
+  echo
+  echo 'export ETCDCTL_PEERS="$(vagrant ssh-config core-1 | sed -n "s/[ ]*HostName[ ]*//gp"):4001"'
+  exit 1
+fi
+
+etcdctl -C "${ETCDCTL_PEERS}" $ARGS
