@@ -18,6 +18,22 @@ $ vagrant up
 	$ etcdctl ls
 	```
 
+	***You may need the following configurations.***
+
+	```
+	$ export ETCDCTL_PEERS="$(vagrant ssh-config core-1 | sed -n "s/[ ]*HostName[ ]*//gp"):4001"
+	```
+
+	***etcdctl < v0.4.5***
+
+	```
+	$ etcdctl -C "${ETCDCTL_PEERS}" ls
+	```
+
+	***etcdctl >= v0.4.5 supports ETCDCTL_PEERS env variable***  
+	Cf.) https://github.com/coreos/etcdctl/pull/95/files
+
+
 - Test writing and reading
 
 	```
