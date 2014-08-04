@@ -2,9 +2,14 @@
 
 coreos:
   etcd:
-      discovery: http://%ETCD_DISCVERY%:4001/v2/keys/cluster
-      addr: $public_ipv4:4001
-      peer-addr: $public_ipv4:7001
+    name: %NAME%
+    discovery: http://%ETCD_DISCVERY%:4001/v2/keys/cluster
+    addr: $public_ipv4:4001
+    peer-addr: $public_ipv4:7001
+
+  fleet:
+    public-ip: $public_ipv4
+    metadata: name=%NAME%
 
   units:
     - name: etcd.service
@@ -12,11 +17,3 @@ coreos:
 
     - name: fleet.service
       command: start
-      runtime: no
-      content: |
-        [Unit]
-        Description=fleet
-
-        [Service]
-        Environment=FLEET_PUBLIC_IP=$public_ipv4
-        ExecStart=/usr/bin/fleet

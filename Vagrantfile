@@ -44,6 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       core.vm.provision :shell do |sh|
         sh.privileged = true
         sh.inline = <<-EOT
+          sed -e "s/%NAME%/core-#{i}/g" -i /tmp/vagrantfile-user-data
           sed -e "s/%ETCD_DISCVERY%/#{ETCD_DISCVERY}/g" -i /tmp/vagrantfile-user-data
           mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
         EOT
