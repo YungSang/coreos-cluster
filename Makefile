@@ -4,7 +4,7 @@ virtialbox:
 
 parallels:
 	vagrant destroy -f
-	BASE_IP_ADDR="192.168.66" vagrant up --provider parallels
+	BASE_IP_ADDR="192.168.66" vagrant up --provider parallels --no-parallel
 
 clean:
 	vagrant destroy -f
