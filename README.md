@@ -181,14 +181,14 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 	 / /   / __ \/ ___/ _ \/ / / /\__ \
 	/ /___/ /_/ / /  /  __/ /_/ /___/ /
 	\____/\____/_/   \___/\____//____/
-	core@core-2 ~ $ docker run -i -t --link redis-dyn-amb.service:redis relateiq/redis-cli
-	Pulling repository relateiq/redis-cli
+	core@core-2 ~ $ docker run -i -t --link redis-dyn-amb.service:redis shopigniter/redis-cli -h redis
+	Pulling repository shopigniter/redis-cli
 	.
 	.
 	.
-	redis 172.17.0.3:6379> ping
+	redis:6379> ping
 	PONG
-	redis 172.17.0.3:6379> exit
+	redis:6379> exit
 	core@core-2 ~ $ 
 	```
 
