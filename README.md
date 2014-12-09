@@ -5,8 +5,23 @@ This will setup [CoreOS](https://coreos.com/) cluster environment with [Vagrant]
 ```
 $ git clone https://github.com/YungSang/coreos-cluster
 $ cd coreos-cluster
-$ vagrant up
 ```
+if using virtualbox
+```
+$ make virtualbox
+```
+if using parallels
+```
+$ make parallels
+```
+By default the cluster is setup consuming CoreOS default, production, channel. If you wish to play with, say, the alpha channel just do...
+```
+CHANNEL=coreos-alpha make parallels
+```
+please do note that if you change the default channel you'll need to also set it in your shell (export CHANNEL=...) so that the stock vagrant command invocation works.
+
+For power users, there are also a few other settings that can be tweaked at time of the makefile invocation;
+please look at [it](https://github.com/YungSang/coreos-cluster/blob/master/Makefile) for all the available options.
 
 ## Play with Etcd
 
@@ -30,7 +45,7 @@ $ vagrant up
 	$ etcdctl -C "${ETCDCTL_PEERS}" ls
 	```
 
-	***etcdctl >= v0.4.5 supports ETCDCTL_PEERS env variable***  
+	***etcdctl >= v0.4.5 supports ETCDCTL_PEERS env variable***
 	Cf.) https://github.com/coreos/etcdctl/pull/95/files
 
 
@@ -68,7 +83,7 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 	$ export FLEETCTL_TUNNEL="$(vagrant ssh-config core-1 | sed -n "s/[ ]*HostName[ ]*//gp"):$(vagrant ssh-config core-1 | sed -n "s/[ ]*Port[ ]*//gp")"
 	```
 
-	Cf.) [Remote fleet Access for Vagrant](https://github.com/coreos/fleet/blob/master/Documentation/remote-access.md#vagrant)
+	Cf.) [Remote fleet Access for Vagrant](https://github.com/coreos/fleet/blob/master/Documentation/using-the-client.md#vagrant)
 
 - Check Fleet status
 
@@ -96,7 +111,7 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 	hello.service	loaded	active	running	Hello World	d760866b.../192.168.65.2
 	```
 
-- Check the status and login to the VM where the servise runs  
+- Check the status and login to the VM where the servise runs
 
 	```
 	$ fleetctl status hello.service
@@ -107,7 +122,7 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 	   CGroup: /system.slice/hello.service
 	           ├─3237 /bin/bash -c while true; do echo "Hello, world"; sleep 1; done
 	           └─3305 sleep 1
-	
+
 	Mar 29 16:11:06 core-1 bash[3237]: Hello, world
 	Mar 29 16:11:07 core-1 bash[3237]: Hello, world
 	Mar 29 16:11:08 core-1 bash[3237]: Hello, world
@@ -124,7 +139,7 @@ Cf.) [Controlling the Cluster with fleetctl](https://coreos.com/docs/launching-c
 	 / /   / __ \/ ___/ _ \/ / / /\__ \
 	/ /___/ /_/ / /  /  __/ /_/ /___/ /
 	\____/\____/_/   \___/\____//____/
-	core@core-1 ~ $ 
+	core@core-1 ~ $
 	```
 
 ## Ambassador Pattern
@@ -160,7 +175,7 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 	redis-dyn-amb.service		loaded	active	running	Etcd Ambassador on B	bbeb5e27.../192.168.65.3
 	```
 
-- Make sure the services has been started successfully  
+- Make sure the services has been started successfully
 (It will take some time to complete.)
 
 	```
@@ -189,10 +204,10 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 	redis:6379> ping
 	PONG
 	redis:6379> exit
-	core@core-2 ~ $ 
+	core@core-2 ~ $
 	```
 
 ## License
 
-[![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)  
+[![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
 To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.
