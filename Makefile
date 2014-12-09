@@ -1,4 +1,4 @@
-virtialbox:
+virtualbox:
 	vagrant destroy -f
 	BASE_IP_ADDR="192.168.65" vagrant up
 
