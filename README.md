@@ -5,24 +5,16 @@ This will setup [CoreOS](https://coreos.com/) cluster environment with [Vagrant]
 ```
 $ git clone https://github.com/YungSang/coreos-cluster
 $ cd coreos-cluster
-```
-if using virtualbox
-```
 $ make virtualbox
 ```
-if using parallels
+in case you are using parallels...
+
 ```
 $ make parallels
 ```
-By default the cluster is setup consuming CoreOS default, production, channel. If you wish to play with, say, the alpha channel just do...
-```
-CHANNEL=coreos-alpha make parallels
-```
-please do note that if you change the default channel you'll need to also set it in your shell (export CHANNEL=...) so that the stock vagrant command invocation works.
+By default a three node cluster is provisioned, consuming CoreOS default, production, [channel](https://coreos.com/releases/).
 
-For power users, there are also a few other settings that can be tweaked at time of the makefile invocation;
-please look at [it](https://github.com/YungSang/coreos-cluster/blob/master/Makefile) for all the available options.
-
+If you wish to change the _defaults_ just edit [cluster.yaml](./cluster.yaml) and modify it to suit your goals.
 ## Play with Etcd
 
 - Requirement: [etcdctl](https://github.com/coreos/etcd/releases)

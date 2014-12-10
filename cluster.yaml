@@ -1,0 +1,15 @@
+defaults: &defaults
+    cpus: 1
+    memory: 1024
+ip_addr_prefix: "192.168.65"
+channel: yungsang/coreos
+num_nodes: 3
+discovery:
+    name: discovery
+    <<: *defaults
+node_specs:
+    prefix: core
+    <<: *defaults
+virtualbox:
+   gui: false
+
