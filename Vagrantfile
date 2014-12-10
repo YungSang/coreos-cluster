@@ -11,7 +11,7 @@ cluster = YAML.load_file('cluster.yaml')
 
 NUM_INSTANCES = Integer(cluster['num_nodes'])
 
-BASE_IP_ADDR = String(cluster['ip_addr_prefix'])
+BASE_IP_ADDR = ENV['BASE_IP_ADDR'] || String(cluster['ip_addr_prefix'])
 ETCD_DISCOVERY = "#{BASE_IP_ADDR}.101"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
