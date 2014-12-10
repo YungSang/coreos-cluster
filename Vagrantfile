@@ -15,7 +15,7 @@ BASE_IP_ADDR = ENV['BASE_IP_ADDR'] || String(cluster['ip_addr_prefix'])
 ETCD_DISCOVERY = "#{BASE_IP_ADDR}.101"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = String(cluster['channel'])
+  config.vm.box = String(cluster['box'])
   # config.vm.box_version = ">= 0.4.0"
 
   config.vm.define "discovery" do |discovery|
