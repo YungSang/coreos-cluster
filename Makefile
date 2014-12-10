@@ -1,3 +1,6 @@
+BASE_IP_ADDR ?= 192.168.66
+export BASE_IP_ADDR
+
 virtualbox: clean
 	vagrant up
 
