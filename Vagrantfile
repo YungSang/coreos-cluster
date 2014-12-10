@@ -23,10 +23,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     discovery.vm.network :private_network, ip: ETCD_DISCOVERY
 
-    discovery.vm.provider :vmware_fusion do |v|
-      v.vmx["memsize"] = Integer(cluster['discovery']['memory'])
-      v.vmx["numvcpus"] = Integer(cluster['discovery']['cpus'])
-    end
     discovery.vm.provider :virtualbox do |v|
       v.memory = Integer(cluster['discovery']['memory'])
       v.cpus = Integer(cluster['discovery']['cpus'])
@@ -55,10 +51,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
       core.vm.network :private_network, ip: "#{BASE_IP_ADDR}.#{i+1}"
 
-      core.vm.provider :vmware_fusion do |v|
-        v.vmx["memsize"] = Integer(cluster['node_specs']['memory'])
-        v.vmx["numvcpus"] = Integer(cluster['node_specs']['cpus'])
-      end
       core.vm.provider :virtualbox do |v|
         v.memory = Integer(cluster['node_specs']['memory'])
         v.cpus = Integer(cluster['node_specs']['cpus'])
