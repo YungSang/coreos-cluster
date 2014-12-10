@@ -37,7 +37,7 @@ If you wish to change the _defaults_ just edit [cluster.yaml](./cluster.yaml) an
 	$ etcdctl -C "${ETCDCTL_PEERS}" ls
 	```
 
-	***etcdctl >= v0.4.5 supports ETCDCTL_PEERS env variable***
+	***etcdctl >= v0.4.5 supports ETCDCTL_PEERS env variable***  
 	Cf.) https://github.com/coreos/etcdctl/pull/95/files
 
 
@@ -201,5 +201,5 @@ Cf.) [Dynamic Docker links with an ambassador powered by etcd](http://coreos.com
 
 ## License
 
-[![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
+[![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)  
 To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.
