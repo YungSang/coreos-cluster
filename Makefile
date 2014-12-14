@@ -1,10 +1,12 @@
-virtualbox:
-	vagrant destroy -f
-	BASE_IP_ADDR="192.168.65" vagrant up
+ifdef BASE_IP_ADDR
+	export BASE_IP_ADDR
+endif
 
-parallels:
-	vagrant destroy -f
-	BASE_IP_ADDR="192.168.66" vagrant up --provider parallels --no-parallel
+virtualbox: clean
+	vagrant up
+
+parallels: clean
+	vagrant up --provider parallels --no-parallel
 
 clean:
 	vagrant destroy -f
