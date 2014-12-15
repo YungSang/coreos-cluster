@@ -23,6 +23,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     discovery.vm.network :private_network, ip: ETCD_DISCOVERY
 
+    share = cluster['folder_sharing']
+    if share['enabled']
+      discovery.vm.synced_folder "#{share['source']}", "#{share['destination']}", type: "nfs", mount_options: ["nolock", "vers=3", "udp"]
+    end
+
     discovery.vm.provider :virtualbox do |v|
       v.memory = Integer(cluster['discovery']['memory'])
       v.cpus = Integer(cluster['discovery']['cpus'])
@@ -40,10 +45,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       sh.inline = <<-EOT
         mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
       EOT
-    end
-    share = cluster['folder_sharing']
-    if share['enabled']
-      config.vm.synced_folder "#{share['source']}", "#{share['destination']}", type: "nfs", mount_options: ["nolock", "vers=3", "udp"]
     end
   end
 
