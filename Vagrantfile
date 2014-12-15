@@ -7,35 +7,37 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.require_version ">= 1.5.0"
 
 # Read YAML file with cluster details
-cluster = YAML.load_file('cluster.yaml')
+CLUSTER_CONFIG = YAML.load_file('cluster.yaml')
 
-NUM_INSTANCES = Integer(cluster['num_nodes'])
+NUM_INSTANCES = Integer(CLUSTER_CONFIG['num_nodes'])
 
-BASE_IP_ADDR = ENV['BASE_IP_ADDR'] || String(cluster['ip_addr_prefix'])
+BASE_IP_ADDR = ENV['BASE_IP_ADDR'] || String(CLUSTER_CONFIG['ip_addr_prefix'])
+COREOS_VAGRANT_BOX = ENV['COREOS_VAGRANT_BOX'] || String(CLUSTER_CONFIG['box'])
 ETCD_DISCOVERY = "#{BASE_IP_ADDR}.101"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = String(cluster['box'])
+  config.vm.box = "#{COREOS_VAGRANT_BOX}"
+  # config.vm.box_url = "https://vagrantcloud.com/%s" % "#{COREOS_VAGRANT_BOX}"
   # config.vm.box_version = ">= 0.4.0"
 
-  config.vm.define "discovery" do |discovery|
-    discovery.vm.hostname = String(cluster['discovery']['name'])
-
+  vmName = String(CLUSTER_CONFIG['discovery']['name'])
+  config.vm.define "#{vmName}" do |discovery|
+    discovery.vm.hostname = "#{vmName}"
     discovery.vm.network :private_network, ip: ETCD_DISCOVERY
 
-    share = cluster['folder_sharing']
+    share = CLUSTER_CONFIG['folder_sharing']
     if share['enabled']
       discovery.vm.synced_folder "#{share['source']}", "#{share['destination']}", type: "nfs", mount_options: ["nolock", "vers=3", "udp"]
     end
 
     discovery.vm.provider :virtualbox do |v|
-      v.memory = Integer(cluster['discovery']['memory'])
-      v.cpus = Integer(cluster['discovery']['cpus'])
-      v.gui = cluster['virtualbox']['gui']
+      v.memory = Integer(CLUSTER_CONFIG['discovery']['memory'])
+      v.cpus = Integer(CLUSTER_CONFIG['discovery']['cpus'])
+      v.gui = CLUSTER_CONFIG['virtualbox']['gui']
     end
     discovery.vm.provider :parallels do |v|
-      v.memory = Integer(cluster['discovery']['memory'])
-      v.cpus = Integer(cluster['discovery']['cpus'])
+      v.memory = Integer(CLUSTER_CONFIG['discovery']['memory'])
+      v.cpus = Integer(CLUSTER_CONFIG['discovery']['cpus'])
     end
 
     discovery.vm.provision :file, source: "./discovery", destination: "/tmp/vagrantfile-user-data"
@@ -49,26 +51,27 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   (1..NUM_INSTANCES).each do |i|
-    config.vm.define String(cluster['node_specs']['prefix']) + "-#{i}" do |core|
-      core.vm.hostname = String(cluster['node_specs']['prefix']) + "-#{i}"
+    vmName = String(CLUSTER_CONFIG['node_specs']['prefix']) + "-#{i}"
+    config.vm.define "#{vmName}"  do |core|
+      core.vm.hostname = "#{vmName}"
 
       core.vm.network :forwarded_port, guest: 4001, host: "400#{i}".to_i
 
       core.vm.network :private_network, ip: "#{BASE_IP_ADDR}.#{i+1}"
 
-      share = cluster['folder_sharing']
+      share = CLUSTER_CONFIG['folder_sharing']
       if share['enabled']
         core.vm.synced_folder "#{share['source']}", "#{share['destination']}", type: "nfs", mount_options: ["nolock", "vers=3", "udp"]
       end
 
       core.vm.provider :virtualbox do |v|
-        v.memory = Integer(cluster['node_specs']['memory'])
-        v.cpus = Integer(cluster['node_specs']['cpus'])
-        v.gui = cluster['virtualbox']['gui']
+        v.memory = Integer(CLUSTER_CONFIG['node_specs']['memory'])
+        v.cpus = Integer(CLUSTER_CONFIG['node_specs']['cpus'])
+        v.gui = CLUSTER_CONFIG['virtualbox']['gui']
       end
       core.vm.provider :parallels do |v|
-        v.memory = Integer(cluster['node_specs']['memory'])
-        v.cpus = Integer(cluster['node_specs']['cpus'])
+        v.memory = Integer(CLUSTER_CONFIG['node_specs']['memory'])
+        v.cpus = Integer(CLUSTER_CONFIG['node_specs']['cpus'])
       end
 
       core.vm.provision :file, source: "./user-data", destination: "/tmp/vagrantfile-user-data"
