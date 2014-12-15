@@ -34,10 +34,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     discovery.vm.provision :file, source: "./discovery", destination: "/tmp/vagrantfile-user-data"
+    # UTC (default) is a no-op
+    if String(cluster['timezone']) != "UTC"
+      discovery.vm.provision :file, source: "./timezone", destination: "/tmp/timezone"
+    end
 
     discovery.vm.provision :shell do |sh|
       sh.privileged = true
       sh.inline = <<-EOT
+        if [ -f /tmp/timezone ]; then
+          sed -e "s,%%timezone%%,#{cluster['timezone']},g" -i /tmp/timezone
+        fi
+        cat /tmp/timezone >> /tmp/vagrantfile-user-data
+        rm -rf /tmp/timezone
         mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
       EOT
     end

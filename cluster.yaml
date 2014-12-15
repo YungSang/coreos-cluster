@@ -15,4 +15,5 @@ node_specs:
     <<: *defaults
 virtualbox:
    gui: false
-
+# timezone: Europe/Lisbon
+timezone: UTC

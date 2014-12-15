@@ -1,0 +1,15 @@
+
+    - name: timezone.service
+      command: start
+      enable: true
+      content: |
+        [Unit]
+         Description=Set localtime
+         Requires=ntpd.service docker.service etcd.service
+         Before=ntpd.service docker.service etcd.service
+        [Service]
+         Type=oneshot
+         ExecStartPre=/usr/bin/timedatectl set-ntp true
+         ExecStart=/usr/bin/timedatectl set-timezone %%timezone%%
+         RemainAfterExit=true
+
