@@ -15,4 +15,7 @@ node_specs:
     <<: *defaults
 virtualbox:
    gui: false
+docker:
+    # enables docker's port forwarding for remote API access
+    port_forwarding: false
 
