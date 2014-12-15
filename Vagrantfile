@@ -12,15 +12,17 @@ cluster = YAML.load_file('cluster.yaml')
 NUM_INSTANCES = Integer(cluster['num_nodes'])
 
 BASE_IP_ADDR = ENV['BASE_IP_ADDR'] || String(cluster['ip_addr_prefix'])
+COREOS_VAGRANT_BOX = ENV['COREOS_VAGRANT_BOX'] || String(cluster['box'])
 ETCD_DISCOVERY = "#{BASE_IP_ADDR}.101"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = String(cluster['box'])
+  config.vm.box = "#{COREOS_VAGRANT_BOX}"
+  # config.vm.box_url = "https://vagrantcloud.com/%s" % "#{COREOS_VAGRANT_BOX}"
   # config.vm.box_version = ">= 0.4.0"
 
-  config.vm.define "discovery" do |discovery|
-    discovery.vm.hostname = String(cluster['discovery']['name'])
-
+  vmName = String(cluster['discovery']['name'])
+  config.vm.define "#{vmName}" do |discovery|
+    discovery.vm.hostname = "#{vmName}"
     discovery.vm.network :private_network, ip: ETCD_DISCOVERY
 
     share = cluster['folder_sharing']
@@ -49,8 +51,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   (1..NUM_INSTANCES).each do |i|
-    config.vm.define String(cluster['node_specs']['prefix']) + "-#{i}" do |core|
-      core.vm.hostname = String(cluster['node_specs']['prefix']) + "-#{i}"
+    vmName = String(cluster['node_specs']['prefix']) + "-#{i}"
+    config.vm.define "#{vmName}"  do |core|
+      core.vm.hostname = "#{vmName}"
 
       core.vm.network :forwarded_port, guest: 4001, host: "400#{i}".to_i
 
