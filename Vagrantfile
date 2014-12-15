@@ -62,10 +62,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
 
       core.vm.provision :file, source: "./user-data", destination: "/tmp/vagrantfile-user-data"
+      if cluster['docker']['port_forwarding']
+        core.vm.network "forwarded_port", guest: 2375, host: (2375 + i - 1), auto_correct: true
+        core.vm.provision :file, :source => "./docker-port-forwarding", :destination => "/tmp/docker-port-forwarding"
+      end
 
       core.vm.provision :shell do |sh|
         sh.privileged = true
         sh.inline = <<-EOT
+          if [ -f /tmp/docker-port-forwarding ]; then
+            cat /tmp/docker-port-forwarding >> /tmp/vagrantfile-user-data
+            rm -rf /tmp/docker-port-forwarding
+          fi
           sed -e "s/%NAME%/core-#{i}/g" -i /tmp/vagrantfile-user-data
           sed -e "s/%ETCD_DISCOVERY%/#{ETCD_DISCOVERY}/g" -i /tmp/vagrantfile-user-data
           mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
