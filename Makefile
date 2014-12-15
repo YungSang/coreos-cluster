@@ -3,7 +3,7 @@ ifdef BASE_IP_ADDR
 endif
 
 virtualbox: clean
-	vagrant up
+	vagrant up --provider virtualbox
 
 parallels: clean
 	vagrant up --provider parallels --no-parallel
