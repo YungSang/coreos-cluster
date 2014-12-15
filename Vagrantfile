@@ -23,6 +23,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     discovery.vm.network :private_network, ip: ETCD_DISCOVERY
 
+    share = cluster['folder_sharing']
+    if share['enabled']
+      discovery.vm.synced_folder "#{share['source']}", "#{share['destination']}", type: "nfs", mount_options: ["nolock", "vers=3", "udp"]
+    end
+
     discovery.vm.provider :virtualbox do |v|
       v.memory = Integer(cluster['discovery']['memory'])
       v.cpus = Integer(cluster['discovery']['cpus'])
@@ -50,6 +55,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       core.vm.network :forwarded_port, guest: 4001, host: "400#{i}".to_i
 
       core.vm.network :private_network, ip: "#{BASE_IP_ADDR}.#{i+1}"
+
+      share = cluster['folder_sharing']
+      if share['enabled']
+        core.vm.synced_folder "#{share['source']}", "#{share['destination']}", type: "nfs", mount_options: ["nolock", "vers=3", "udp"]
+      end
 
       core.vm.provider :virtualbox do |v|
         v.memory = Integer(cluster['node_specs']['memory'])
