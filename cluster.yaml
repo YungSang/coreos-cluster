@@ -15,4 +15,9 @@ node_specs:
     <<: *defaults
 virtualbox:
    gui: false
+# set true below to enable NFS sharing between the host machine and the CoreOS VMs.
+folder_sharing:
+    enabled: false
+    source: .
+    destination: /home/core/shared
 

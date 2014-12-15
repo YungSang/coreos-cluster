@@ -41,6 +41,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         mv /tmp/vagrantfile-user-data /var/lib/coreos-vagrant/
       EOT
     end
+    share = cluster['folder_sharing']
+    if share['enabled']
+      config.vm.synced_folder "#{share['source']}", "#{share['destination']}", type: "nfs", mount_options: ["nolock", "vers=3", "udp"]
+    end
   end
 
   (1..NUM_INSTANCES).each do |i|
@@ -50,6 +54,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       core.vm.network :forwarded_port, guest: 4001, host: "400#{i}".to_i
 
       core.vm.network :private_network, ip: "#{BASE_IP_ADDR}.#{i+1}"
+
+      share = cluster['folder_sharing']
+      if share['enabled']
+        core.vm.synced_folder "#{share['source']}", "#{share['destination']}", type: "nfs", mount_options: ["nolock", "vers=3", "udp"]
+      end
 
       core.vm.provider :virtualbox do |v|
         v.memory = Integer(cluster['node_specs']['memory'])
