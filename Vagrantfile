@@ -51,9 +51,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   (1..NUM_INSTANCES).each do |i|
-    vmName = String(CLUSTER_CONFIG['node_specs']['prefix']) + "-#{i}"
-    config.vm.define "#{vmName}"  do |core|
-      core.vm.hostname = "#{vmName}"
+    config.vm.define String(CLUSTER_CONFIG['node_specs']['prefix']) + "-#{i}"  do |core|
+      core.vm.hostname = String(CLUSTER_CONFIG['node_specs']['prefix']) + "-#{i}"
 
       core.vm.network :forwarded_port, guest: 4001, host: "400#{i}".to_i
 
